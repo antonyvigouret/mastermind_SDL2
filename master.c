@@ -154,6 +154,9 @@ void Init_Proposition(Couleur c[4]){
 
 void Ajout_Couleur(Couleur c[4], Couleur couleur){
     for (int i = 0; i < 4; i++){
-        if (c[i] == RIEN) c[i] = couleur;
+        if (c[i] == RIEN) {
+					c[i] = couleur;
+					break;
+				}
     }
 }

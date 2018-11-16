@@ -10,6 +10,10 @@
 
 int main(int argc, char **argv){
 
+	 int solution[NB_COLONNES];// = {1, 2, 3 ,1};
+	 initialiser_solution(solution);
+	 for (int i = 0; i < 4; i++) printf("%d ", solution[i]);
+
    Couleur proposition[4];
    Init_Proposition(proposition);
 
@@ -82,8 +86,13 @@ int main(int argc, char **argv){
 
    SDL_bool program_launched = SDL_TRUE;
 
-   while (program_launched){
+	 int i = 0;
+	 int j = 0;
+	 
+
+   while (program_launched && (i < 10)){
       SDL_Event event;
+      
       
       while (SDL_PollEvent(&event)){
 
@@ -101,30 +110,71 @@ int main(int argc, char **argv){
                      int y;
                      y = event.motion.y;
                      //on vérifie la position de la souris par rapport a la barre des boutons
-                     printf("%d %d \n",x , y);
+                     //printf("%d %d \n",x , y);
                      if ((y <= WINDOW_H-20) && (x <= 420) && (x >= 70) && (y >= WINDOW_H-70)){
-                        printf("alo");
+                        //printf("ok\n");
                         switch ((x-70) / 70){
                            case 0:
-                              Ajout_Couleur(proposition, ROUGE);
-                              printf("rouge");
+                              if (j<4){
+																Ajout_Couleur(proposition, ROUGE);
+																Dessiner_Rectangle(renderer, 70+j*70, WINDOW_H -125 -i*55, ROUGE);
+																SDL_RenderPresent(renderer);
+																j++;
+															}
                               break;
                            case 1:
-                              Ajout_Couleur(proposition, VERT);
-                              printf("vert");
+                              if (j<4){
+																Ajout_Couleur(proposition, VERT);
+																Dessiner_Rectangle(renderer, 70+j*70, WINDOW_H -125 -i*55, VERT);
+																SDL_RenderPresent(renderer);
+																j++;
+															}
                               break;
                            case 2:
-                              Ajout_Couleur(proposition, CYAN);
-                              printf("cyan");
+                              if (j<4){
+																Ajout_Couleur(proposition, CYAN);
+																Dessiner_Rectangle(renderer, 70+j*70, WINDOW_H -125 -i*55, CYAN);
+																SDL_RenderPresent(renderer);
+																j++;
+															}
                               break;
                            case 3:
-                              Ajout_Couleur(proposition, BLEU);
-                              printf("bleu");
+                              if (j<4) {
+																Ajout_Couleur(proposition, BLEU);
+																Dessiner_Rectangle(renderer, 70+j*70, WINDOW_H -125 -i*55, BLEU);
+																SDL_RenderPresent(renderer);
+																j++;
+															}
                               break;
                            case 4:
-                              Dessiner_Ligne(renderer, 300, proposition);
-                              Init_Proposition(proposition);
-                              printf("valide");
+                              //Dessiner_Ligne(renderer, WINDOW_H -70 -i*55, proposition);
+															if (j == 4){
+																i++;
+																j = 0;
+																printf("validation\n");
+																combinaison resultat = compiler_proposition(proposition, solution);
+																printf("b : %d , m : %d\n", resultat.bienp, resultat.malp);
+																if (resultat.bienp > 0){
+																	for (int k = 0; k < resultat.bienp; k++){
+																		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); 
+																		SDL_Rect rect = {370 + 20*k, WINDOW_H -60 -i*55, 10, 10} ;
+																		SDL_RenderFillRect(renderer, &rect);
+																	}
+																}
+																if (resultat.malp > 0){
+																	for (int k = 0; k < resultat.malp; k++){ 
+																		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+																		SDL_Rect rect = {370 + 20*k, WINDOW_H -40 -i*55, 10, 10};
+																		SDL_RenderFillRect(renderer, &rect);
+																	}
+																}
+																if (compare(proposition, solution)){
+																	program_launched = SDL_FALSE;
+																	printf("vous avez gagnez !\n");
+																}
+																SDL_RenderPresent(renderer);															
+																Init_Proposition(proposition);
+															}															
                               break;
                            default:
                               printf("default\n");
@@ -138,7 +188,9 @@ int main(int argc, char **argv){
                      //SDL_RenderPresent(renderer);
                      break;
                   case SDL_BUTTON_RIGHT:
+										 for (int i = 0; i < 4; i++) printf("%d\n", proposition[i]);
                      Init_Proposition(proposition);
+                     j = 0;
                      
                   default:
                      continue;
